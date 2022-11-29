@@ -1,0 +1,78 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model list {
+  id          Int           @id(map: "list_pk") @default(autoincrement())
+  title       String        @unique
+  updated_at  DateTime      @db.Timestamptz(6)
+  deleted_at  DateTime?     @db.Timestamptz(6)
+  person_list person_list[]
+  task        task[]
+}
+
+model permission {
+  id             Int             @id(map: "permission_pk") @default(autoincrement())
+  perm           permission_type
+  person_list_id Int
+  deleted_at     DateTime?       @db.Timestamptz(6)
+  person_list    person_list     @relation(fields: [person_list_id], references: [id], onDelete: NoAction, map: "perons_list_permission_fk")
+
+  @@unique([person_list_id, perm], map: "person_list_permission_unique")
+}
+
+model person {
+  id            Int           @id(map: "person_pk") @default(autoincrement())
+  name          String        @unique
+  password      String
+  access_token  String?
+  refresh_token String?
+  person_list   person_list[]
+  task          task[]
+}
+
+model person_list {
+  id         Int             @unique @default(autoincrement())
+  person_id  Int
+  list_id    Int
+  role       permission_role
+  list       list            @relation(fields: [list_id], references: [id], onDelete: NoAction, map: "list_personlist_fk")
+  person     person          @relation(fields: [person_id], references: [id], onDelete: NoAction, map: "person_personlist_fk")
+  permission permission[]
+
+  @@unique([person_id, list_id], map: "peron_list_unique")
+}
+
+model task {
+  id           Int       @id(map: "task_pk") @default(autoincrement())
+  title        String    @unique
+  description  String?
+  list_id      Int
+  person_id    Int
+  completeness Int       @default(0)
+  start_date   DateTime  @db.Timestamptz(6)
+  end_date     DateTime? @db.Timestamptz(6)
+  updated_at   DateTime  @db.Timestamptz(6)
+  deleted_at   DateTime? @db.Timestamptz(6)
+  list         list      @relation(fields: [list_id], references: [id], onDelete: NoAction, map: "list_task_fk")
+  person       person    @relation(fields: [person_id], references: [id], onDelete: NoAction, map: "person_task_fk")
+
+  @@unique([title, list_id], map: "unique_title_in_list")
+}
+
+enum permission_type {
+  create
+  read
+  update
+  delete
+}
+
+enum permission_role {
+  owner
+  contributor
+}
