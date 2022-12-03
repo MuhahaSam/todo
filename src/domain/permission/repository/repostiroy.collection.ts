@@ -1,5 +1,5 @@
-import ListRepostiory from "../../list/repository.ts/list";
-import PeronListRepository from "../../list/repository.ts/person_list";
+import ListRepostiory from "../../list/repository/list";
+import PeronListRepository from "../../list/repository/person_list";
 import PermissionRepository from "./permission";
 import PersonRepository from "../../../auth/repostitory/person";
 

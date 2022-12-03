@@ -1,6 +1,6 @@
 export interface Permission{
     id?: number
-    perm:  PermissionType
+    perm: PermissionType
     person_list_id: number
     deleted_at: Date | null
 }

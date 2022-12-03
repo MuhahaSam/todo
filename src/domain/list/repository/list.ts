@@ -1,7 +1,7 @@
 
 import prisma from "../../../db/prisma.client";
 
-import { Person } from "../../../auth/entity/entity";
+import { SavedPerson } from "../../../auth/entity/entity";
 import { List} from "../entity/list";
 
 import PermissionRepository from "../../permission/repository/permission";
@@ -13,22 +13,22 @@ export default class ListRepostiory {
     private readonly permissionRepository = new PermissionRepository()
     private readonly personListRepository = new PeronListRepository()
 
-    async create(person:  Person , title: string):Promise<List>{
-        const savedList = await this.findByTitle(title)
+    async create(personId: SavedPerson['id'], title: string): Promise<List> {
+        const savedList = await this.findByTitle(title);
 
-        if (savedList) throw new Error(exceptionName.alreadyExist)
+        if (savedList) throw new Error(exceptionName.alreadyExist);
 
-        const newList = await prisma.list.create({data:{
+        const newList = await prisma.list.create({ data: {
             title: title, 
             updated_at: new Date()
-        }})
+        }});
         const newPeronsList = await this.personListRepository.create({
-            person_id: person.id!,
+            person_id: personId,
             list_id: newList.id,
             role: 'owner'
-        })
-        await this.permissionRepository.init(newPeronsList.id!)
-        return newList
+        });
+        await this.permissionRepository.init(newPeronsList.id!);
+        return newList;
     }
 
     async findByTitle(title: string): Promise<List| null>{

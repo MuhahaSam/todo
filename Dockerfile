@@ -14,7 +14,7 @@ WORKDIR /todo
 # зависимости
 COPY /*package* /
 RUN npm i
-copy . .
+COPY . .
 RUN npx prisma generate
 EXPOSE 8080
 CMD ["npx", "ts-node" ,"/todo/index.ts"]

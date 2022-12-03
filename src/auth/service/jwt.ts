@@ -4,7 +4,7 @@ import { TokenData } from '../entity/token.data';
 import settings from '../../settings';
 
 export default class JwtService{
-    isValidToken(key: string, token?: string, ): boolean {
+    isValidToken(key: string, token?: string): boolean {
         if (!token) return false
         try {
             jwt.verify(token, key);
@@ -13,7 +13,7 @@ export default class JwtService{
         }
         return true
     }
-    decodeJwt(token: string, key: string): TokenData{
+    decodeJwt(token: string, key: string): TokenData {
         const decodeToken = jwt.verify(token, key, { complete: true }).payload as string
         return  JSON.parse(JSON.stringify(decodeToken)).data as TokenData
     }

@@ -27,7 +27,6 @@ app.use(personRouter.allowedMethods())
 app.use(taskRouting.routes())
 app.use(taskRouting.allowedMethods())
 
-app.listen(settings.port, async () => {
-
+app.listen(settings.port, settings.hostname, async () => {
   console.log('Server running at: http://localhost:8080')
 })
